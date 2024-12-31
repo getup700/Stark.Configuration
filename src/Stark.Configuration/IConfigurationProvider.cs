@@ -42,11 +42,6 @@ public interface IConfigurationProvider
     void Load();
 
     /// <summary>
-    /// 当前配置源的路径
-    /// </summary>
-    string Source { get; }
-
-    /// <summary>
     /// 获取子键
     /// </summary>
     /// <para name="parentPath">父级键值对</para>

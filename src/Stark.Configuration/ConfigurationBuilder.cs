@@ -18,31 +18,23 @@ namespace Stark.Configuration;
 
 public class ConfigurationBuilder : IConfigurationBuilder
 {
-    private readonly IList<IConfigurationSource> _source = [];
-    private string _basePath;
+    public IDictionary<string, object> SharedData { get; } = new Dictionary<string, object>();
 
-    public IDictionary<string, object> Configurations => throw new NotImplementedException();
-
-    public IList<IConfigurationSource> Sources => _source;
+    public IList<IConfigurationSource> Sources { get; } = [];
 
     public IConfigurationBuilder Add(IConfigurationSource configurationSource)
     {
         if (configurationSource == null) throw new ArgumentNullException(nameof(configurationSource));
-        _source.Add(configurationSource);
-        return this;
-    }
-
-    public IConfigurationBuilder SetBasePath(string basePath)
-    {
-        _basePath = basePath;
+        Sources.Add(configurationSource);
         return this;
     }
 
     public IConfiguration Build()
     {
-        var providers = _source
-            .Select(source => source.Build(this));
-        return new Configuration(providers.ToList());
+        var providers = Sources
+            .Select(source => source.Build(this))
+            .ToList();
+        return new Configuration(providers);
     }
 
 }

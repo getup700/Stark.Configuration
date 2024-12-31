@@ -22,30 +22,47 @@ namespace Stark.Configuration;
 /// <summary>
 /// 通用类型文件配置构建者
 /// </summary>
-internal class ConfigurationProvider : IConfigurationProvider
+public class ConfigurationProvider : IConfigurationProvider
 {
-    protected IDictionary<string, string> _config;
+    protected IDictionary<string, object> _config = new Dictionary<string, object>(StringComparer.OrdinalIgnoreCase);
+    private readonly IConfigurationSource _source;
 
-    public ConfigurationProvider(string jsonPath)
+    public ConfigurationProvider(ConfigurationSource source)
     {
-        _config = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
-        var fileInfo = new FileInfo(jsonPath);
-        if (fileInfo.Exists && fileInfo.Extension == "json")
-        {
-            Source = jsonPath;
-        }
+        _source = source;
     }
-
-    public string Source { get; }
 
     public virtual void Load()
     {
-
+        var fileInfo = new FileInfo(_source.Path);
+        if (!fileInfo.Exists)
+        {
+            return;
+        }
+        var content = File.ReadAllText(_source.Path);
+        try
+        {
+            //反序列化的结果是带有层级的键值对
+            _config = JsonConvert.DeserializeObject<Dictionary<string, object>>(content);
+        }
+        catch (Exception e)
+        {
+#if Debug
+           throw e;
+#endif
+        }
     }
 
     public bool TryGet(string key, out string value)
     {
-        return _config.TryGetValue(key, out value);
+        if (_config.TryGetValue(key, out var  obj))
+        {
+            value = obj.ToString();
+            return true;
+        }
+
+        value = null;
+        return false;
     }
 
     public void Set(string key, string value)

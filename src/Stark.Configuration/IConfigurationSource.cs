@@ -22,7 +22,12 @@ namespace Stark.Configuration
     public interface IConfigurationSource
     {
         /// <summary>
-        /// 当前配置的全路径
+        /// 当前配置的路径
+        /// </summary>
+        string Path { get; }
+
+        /// <summary>
+        /// 构建当前配置文件
         /// </summary>
         IConfigurationProvider Build(IConfigurationBuilder configurationBuilder);
     }

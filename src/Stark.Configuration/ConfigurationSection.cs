@@ -16,28 +16,36 @@ using System.Threading.Tasks;
 
 namespace Stark.Configuration;
 
+/// <summary>
+/// 允许
+/// </summary>
 internal class ConfigurationSection : IConfigurationSection
 {
     private readonly IConfiguration _configuration;
     private string _key;
     private string _parent;
 
-    public ConfigurationSection(IConfiguration configuration, string parent)
+    public ConfigurationSection(IConfiguration configuration, string key)
     {
         _configuration = configuration;
-        _parent = parent;
+        _key = KeyUtil.GetKeyAndParent(key, out _parent);
     }
 
     public string Parent => _parent;
 
-    public string Key => _key ??= KeyUtil.GetLastSubKeyOrDefault(_parent);
+    public string Key => _key;
 
-    public string Value => _configuration[_parent];
+    public string Value => _configuration[_key];
 
     public string this[string key]
     {
-        get => _configuration[_parent + ":" + key];
-        set => _configuration[_parent + ":" + key] = value;
+        get => _configuration[CombinePath()];
+        set => _configuration[CombinePath()] = value;
+    }
+
+    private string CombinePath()
+    {
+        return _parent == null ? Key : _parent + ":" + Key;
     }
 
 

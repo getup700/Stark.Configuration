@@ -21,14 +21,27 @@ namespace Stark.Configuration;
 /// </summary>
 public interface IConfigurationBuilder
 {
-    IDictionary<string, object> Configurations { get; }
+    /// <summary>
+    /// 构造器的共享数据
+    /// </summary>
+    IDictionary<string, object> SharedData { get; }
 
+    /// <summary>
+    /// 数据源
+    /// </summary>
     IList<IConfigurationSource> Sources { get; }
 
+    /// <summary>
+    /// 构造
+    /// </summary>
+    /// <returns></returns>
     IConfiguration Build();
 
-    IConfigurationBuilder SetBasePath(string basePath);
-
+    /// <summary>
+    /// 添加数据源
+    /// </summary>
+    /// <param name="configurationSource"></param>
+    /// <returns></returns>
     IConfigurationBuilder Add(IConfigurationSource configurationSource);
 
 }

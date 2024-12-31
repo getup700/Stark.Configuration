@@ -22,7 +22,7 @@ namespace Stark.Configuration;
 public interface IConfigurationSection
 {
     /// <summary>
-    /// 键
+    /// 节点的键
     /// </summary>
     string Key { get; }
 
@@ -32,9 +32,14 @@ public interface IConfigurationSection
     string Value { get; }
 
     /// <summary>
-    /// 父级节点路径
+    /// 节点的完整路径
     /// </summary>
     string Parent { get; }
 
+    /// <summary>
+    /// 获取当前节点内的键值
+    /// </summary>
+    /// <param name="key"></param>
+    /// <returns></returns>
     string this[string key] { get; set; }
 }

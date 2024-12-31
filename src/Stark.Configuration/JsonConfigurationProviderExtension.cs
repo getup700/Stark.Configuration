@@ -10,6 +10,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -20,8 +21,17 @@ public static class JsonConfigurationProviderExtension
 {
     public static IConfigurationBuilder AddJsonFile(this IConfigurationBuilder configurationBuilder, string path)
     {
-        var jsonBuilder = new JsonConfigurationProvider(path);
-        var d = configurationBuilder.Build();
+        var fullPath = string.Empty;
+        if (!File.Exists(path) && configurationBuilder.SharedData.TryGetValue("basePath", out var basePath))
+        {
+            fullPath = System.IO.Path.Combine(basePath.ToString(), path);
+        }
+        else
+        {
+            fullPath = path;
+        }
+        var source = new ConfigurationSource(fullPath);
+        configurationBuilder.Add(source);
         return configurationBuilder;
     }
 }

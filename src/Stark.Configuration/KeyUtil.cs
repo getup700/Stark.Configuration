@@ -38,17 +38,40 @@ internal static class KeyUtil
     /// <summary>
     /// 如果路径不包含:返回整个path;否则返回最后一个:之后的所有字符串
     /// </summary>
-    /// <param name="path"></param>
+    /// <param name="key"></param>
     /// <returns></returns>
-    public static string GetLastSubKeyOrDefault(string path)
+    public static string GetLastSubKeyOrDefault(string key)
     {
-        if (string.IsNullOrEmpty(path))
+        if (string.IsNullOrEmpty(key))
         {
-            return path;
+            return key;
         }
 
-        var lastDelimiterIndex = path.LastIndexOf(':');
-        return lastDelimiterIndex < 0 ? path : path.Substring(lastDelimiterIndex + 1);
+        var lastDelimiterIndex = key.LastIndexOf(':');
+        return lastDelimiterIndex < 0 ? key : key.Substring(lastDelimiterIndex + 1);
+    }
+
+    public static string GetKeyAndParent(string key, out string parent)
+    {
+        if (IsSingleKey(key))
+        {
+            parent = null;
+            return key;
+        }
+
+        var lastDelimiterIndex = key.LastIndexOf(':');
+        parent = key.Substring(0, lastDelimiterIndex);
+        return key.Substring(lastDelimiterIndex, lastDelimiterIndex + 1);
+    }
+
+    /// <summary>
+    /// 是否单一键
+    /// </summary>
+    /// <param name="key"></param>
+    /// <returns></returns>
+    public static bool IsSingleKey(string key)
+    {
+        return key.Contains(':');
     }
 
     /// <summary>
